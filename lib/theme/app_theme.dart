@@ -11,32 +11,22 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       scaffoldBackgroundColor: Colors.white,
-
       colorScheme: ColorScheme.fromSeed(
         seedColor: primaryRed,
         primary: primaryRed,
       ),
-
       fontFamily: 'Roboto',
-
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: fieldBackground,
-
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(
-            color: lightGrey,
-          ),
+          borderSide: const BorderSide(color: lightGrey),
         ),
-
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(
-            color: lightGrey,
-          ),
+          borderSide: const BorderSide(color: lightGrey),
         ),
-
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(
@@ -44,7 +34,6 @@ class AppTheme {
             width: 1.5,
           ),
         ),
-
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 16,

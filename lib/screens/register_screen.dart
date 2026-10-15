@@ -22,37 +22,37 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
+  void _goToLogin() {
+    // Deixa apenas a página inicial e a página de login na pilha.
+    // Funciona quer tenhas vindo da página inicial ou do login.
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      '/login',
+      (route) => route.isFirst,
+    );
+  }
+
   Future<void> _register() async {
-    // Validate required fields
+    if (_controller.isLoading) return;
+
     if (!_controller.isValid()) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Preencha todos os campos.'),
-        ),
+        const SnackBar(content: Text('Preenche todos os campos.')),
       );
-
       return;
     }
 
-    // Validate email
     if (!_controller.isValidEmail()) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Introduza um email válido.'),
-        ),
+        const SnackBar(content: Text('Introduz um email válido.')),
       );
-
       return;
     }
 
-    // Validate passwords
     if (!_controller.passwordsMatch()) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('As palavras-passe não coincidem.'),
-        ),
+        const SnackBar(content: Text('As palavras-passe não coincidem.')),
       );
-
       return;
     }
 
@@ -60,6 +60,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _controller.isLoading = true;
     });
 
+    // Conserva a lógica existente no teu RegisterController.
     final result = await _controller.register();
 
     if (!mounted) return;
@@ -73,8 +74,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         msg: 'Conta criada com sucesso.',
         toastLength: Toast.LENGTH_SHORT,
       );
-
-      Navigator.pop(context);
+      _goToLogin();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -97,32 +97,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
               vertical: 24,
             ),
             child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                maxWidth: 420,
-              ),
+              constraints: const BoxConstraints(maxWidth: 420),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Back button
                   IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: const Icon(
-                      Icons.arrow_back_ios_new,
-                      size: 20,
-                    ),
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.arrow_back_ios_new, size: 20),
                     padding: EdgeInsets.zero,
                     alignment: Alignment.centerLeft,
+                    tooltip: 'Voltar',
                   ),
-
                   const SizedBox(height: 24),
-
-                  // Logo
-                  Center(
+                  const Center(
                     child: Text(
                       'OnlyFavs',
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: AppTheme.primaryRed,
                         fontSize: 30,
                         fontWeight: FontWeight.w800,
@@ -130,10 +120,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 48),
-
-                  // Title
                   const Text(
                     'Criar conta',
                     style: TextStyle(
@@ -143,40 +130,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       letterSpacing: -0.5,
                     ),
                   ),
-
                   const SizedBox(height: 8),
-
                   const Text(
-                    'Junte-se ao OnlyFavs',
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: AppTheme.grey,
-                    ),
+                    'Junta-te ao OnlyFavs',
+                    style: TextStyle(fontSize: 15, color: AppTheme.grey),
                   ),
-
                   const SizedBox(height: 32),
-
-                  // Name
                   CustomTextField(
                     controller: _controller.name,
                     label: 'Nome',
                     hintText: 'John Doe',
                     prefixIcon: Icons.person_outline,
                   ),
-
                   const SizedBox(height: 18),
-
-                  // Username
                   CustomTextField(
                     controller: _controller.username,
                     label: 'Nome de utilizador',
                     hintText: '@username',
                     prefixIcon: Icons.alternate_email,
                   ),
-
                   const SizedBox(height: 18),
-
-                  // Email
                   CustomTextField(
                     controller: _controller.email,
                     label: 'Email',
@@ -184,58 +157,40 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     prefixIcon: Icons.email_outlined,
                     keyboardType: TextInputType.emailAddress,
                   ),
-
                   const SizedBox(height: 18),
-
-                  // Password
                   CustomTextField(
                     controller: _controller.password,
                     label: 'Palavra-passe',
-                    hintText: 'Insira a palavra-passe',
+                    hintText: 'Insere a palavra-passe',
                     prefixIcon: Icons.lock_outline,
                     obscureText: true,
                   ),
-
                   const SizedBox(height: 18),
-
-                  // Confirm password
                   CustomTextField(
                     controller: _controller.confirmPassword,
                     label: 'Confirmar palavra-passe',
-                    hintText: 'Repita a sua palavra-passe',
+                    hintText: 'Repete a palavra-passe',
                     prefixIcon: Icons.lock_outline,
                     obscureText: true,
                   ),
-
                   const SizedBox(height: 28),
-
-                  // Register button
                   PrimaryButton(
-                    text: _controller.isLoading
-                        ? 'A criar conta...'
-                        : 'Criar conta',
-                    onPressed: _controller.isLoading
-                        ? () {}
-                        : _register,
+                    text: _controller.isLoading ? 'A criar conta...' : 'Criar conta',
+                    onPressed: _controller.isLoading ? () {} : _register,
                   ),
-
                   const SizedBox(height: 28),
-
-                  // Login
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
-                        'Já tem conta? ',
+                        'Já tens conta? ',
                         style: TextStyle(
                           color: AppTheme.grey,
                           fontSize: 14,
                         ),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
+                      TextButton(
+                        onPressed: _goToLogin,
                         child: const Text(
                           'Login',
                           style: TextStyle(
@@ -247,7 +202,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 20),
                 ],
               ),

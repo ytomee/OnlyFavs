@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/primary_button.dart';
-import 'register_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -19,16 +18,19 @@ class LoginScreen extends StatelessWidget {
               vertical: 24,
             ),
             child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                maxWidth: 420,
-              ),
-
+              constraints: const BoxConstraints(maxWidth: 420),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
-                  // Logo
-                  Center(
+                  IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.arrow_back_ios_new, size: 20),
+                    padding: EdgeInsets.zero,
+                    alignment: Alignment.centerLeft,
+                    tooltip: 'Voltar',
+                  ),
+                  const SizedBox(height: 24),
+                  const Center(
                     child: Text(
                       'OnlyFavs',
                       style: TextStyle(
@@ -39,10 +41,7 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-
-                  const SizedBox(height: 60),
-
-                  // Title
+                  const SizedBox(height: 48),
                   const Text(
                     'Bem-vindo outra vez!',
                     style: TextStyle(
@@ -52,49 +51,35 @@ class LoginScreen extends StatelessWidget {
                       letterSpacing: -0.5,
                     ),
                   ),
-
                   const SizedBox(height: 8),
-
                   const Text(
-                    'Faça login na sua conta OnlyFavs',
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: AppTheme.grey,
-                    ),
+                    'Inicia sessão na tua conta OnlyFavs',
+                    style: TextStyle(fontSize: 15, color: AppTheme.grey),
                   ),
-
                   const SizedBox(height: 36),
-
-                  // Email
                   const CustomTextField(
                     label: 'Email',
                     hintText: 'tu@exemplo.com',
                     prefixIcon: Icons.email_outlined,
                     keyboardType: TextInputType.emailAddress,
                   ),
-
                   const SizedBox(height: 20),
-
-                  // Password
                   const CustomTextField(
-                    label: 'Password',
-                    hintText: 'Insira a password',
+                    label: 'Palavra-passe',
+                    hintText: 'Insere a palavra-passe',
                     prefixIcon: Icons.lock_outline,
                     obscureText: true,
                   ),
-
                   const SizedBox(height: 12),
-
-                  // Forgot password
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
-                      onPressed: () {},
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                      ),
+                      onPressed: () {
+                        // Recuperação de palavra-passe por implementar.
+                      },
+                      style: TextButton.styleFrom(padding: EdgeInsets.zero),
                       child: const Text(
-                        'Esqueceu-se da palavra-passe?',
+                        'Esqueceste-te da palavra-passe?',
                         style: TextStyle(
                           color: AppTheme.primaryRed,
                           fontWeight: FontWeight.w500,
@@ -102,41 +87,28 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 20),
-
-                  // Login button
                   PrimaryButton(
                     text: 'LOGIN',
                     onPressed: () {
-                      // Login será implementado posteriormente.
+                      // Autenticação será implementada posteriormente.
                     },
                   ),
-
                   const SizedBox(height: 28),
-
-                  // Register
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
-                        "Não tem conta? ",
+                        'Não tens conta? ',
                         style: TextStyle(
                           color: AppTheme.grey,
                           fontSize: 14,
                         ),
                       ),
-
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const RegisterScreen(),
-                            ),
-                          );
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/register');
                         },
-
                         child: const Text(
                           'Criar conta',
                           style: TextStyle(

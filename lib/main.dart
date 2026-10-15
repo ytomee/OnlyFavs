@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'screens/login_screen.dart';
+import 'screens/register_screen.dart';
+import 'screens/welcome_screen.dart';
 import 'theme/app_theme.dart';
 
 void main() {
@@ -16,7 +18,11 @@ class OnlyFavsApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'OnlyFavs',
       theme: AppTheme.lightTheme,
-      home: const LoginScreen(),
+      home: const WelcomeScreen(),
+      routes: {
+        '/login': (_) => const LoginScreen(),
+        '/register': (_) => const RegisterScreen(),
+      },
     );
   }
 }
