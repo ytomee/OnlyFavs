@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import '../theme/app_theme.dart';
@@ -91,8 +90,7 @@ class WelcomeScreen extends StatelessWidget {
                                     'assets/images/welcome.jpg',
                                     width: double.infinity,
                                     fit: BoxFit.cover,
-                                    errorBuilder:
-                                        (context, error, stackTrace) {
+                                    errorBuilder: (context, error, stackTrace) {
                                       return Container(
                                         color: AppTheme.fieldBackground,
                                         alignment: Alignment.center,

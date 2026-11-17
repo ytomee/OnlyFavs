@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 
 class RegisterController {
-  final AuthService _authService = AuthService();
+  final AuthService authService;
 
   final TextEditingController name = TextEditingController();
   final TextEditingController username = TextEditingController();
@@ -13,35 +13,30 @@ class RegisterController {
 
   bool isLoading = false;
 
-  bool isValid() {
-    return name.text.trim().isNotEmpty &&
-        username.text.trim().isNotEmpty &&
-        email.text.trim().isNotEmpty &&
-        password.text.isNotEmpty &&
-        confirmPassword.text.isNotEmpty;
+  RegisterController({required this.authService});
+
+  String? validate() {
+    if (name.text.trim().isEmpty ||
+        username.text.trim().isEmpty ||
+        email.text.trim().isEmpty ||
+        password.text.isEmpty ||
+        confirmPassword.text.isEmpty) {
+      return 'Preenche todos os campos.';
+    }
+    if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email.text.trim())) {
+      return 'Introduz um email válido.';
+    }
+    if (password.text != confirmPassword.text) {
+      return 'As palavras-passe não coincidem.';
+    }
+    return null;
   }
 
-  bool isValidEmail() {
-    final emailValue = email.text.trim();
-
-    return RegExp(
-      r'^[^@\s]+@[^@\s]+\.[^@\s]+$',
-    ).hasMatch(emailValue);
-  }
-
-  bool isValidPassword() {
-    return password.text.length >= 8;
-  }
-
-  bool passwordsMatch() {
-    return password.text == confirmPassword.text;
-  }
-
-  Future<Map<String, dynamic>> register() async {
-    return await _authService.registerUser(
+  Future<Map<String, dynamic>> register() {
+    return authService.registerUser(
       name: name.text.trim(),
       username: username.text.trim(),
-      email: email.text.trim(),
+      email: email.text,
       password: password.text,
     );
   }

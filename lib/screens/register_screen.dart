@@ -1,20 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 import '../controllers/register_controller.dart';
+import '../services/auth_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/primary_button.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+  final AuthService authService;
+
+  const RegisterScreen({super.key, required this.authService});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final RegisterController _controller = RegisterController();
+  late final RegisterController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = RegisterController(authService: widget.authService);
+  }
 
   @override
   void dispose() {
@@ -34,53 +42,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> _register() async {
     if (_controller.isLoading) return;
-
-    if (!_controller.isValid()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Preenche todos os campos.')),
-      );
+    final error = _controller.validate();
+    if (error != null) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(error)));
       return;
     }
 
-    if (!_controller.isValidEmail()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Introduz um email válido.')),
-      );
-      return;
-    }
-
-    if (!_controller.passwordsMatch()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('As palavras-passe não coincidem.')),
-      );
-      return;
-    }
-
-    setState(() {
-      _controller.isLoading = true;
-    });
-
-    // Conserva a lógica existente no teu RegisterController.
+    FocusScope.of(context).unfocus();
+    setState(() => _controller.isLoading = true);
     final result = await _controller.register();
-
     if (!mounted) return;
-
-    setState(() {
-      _controller.isLoading = false;
-    });
+    setState(() => _controller.isLoading = false);
 
     if (result['success'] == true) {
-      Fluttertoast.showToast(
-        msg: 'Conta criada com sucesso.',
-        toastLength: Toast.LENGTH_SHORT,
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Conta criada com sucesso.')),
       );
       _goToLogin();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            result['message'] ?? 'Não foi possível criar a conta.',
-          ),
+          content: Text(result['message'] ?? 'Não foi possível criar a conta.'),
         ),
       );
     }
@@ -92,10 +75,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 28,
-              vertical: 24,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 24),
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 420),
               child: Column(
@@ -175,8 +155,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   const SizedBox(height: 28),
                   PrimaryButton(
-                    text: _controller.isLoading ? 'A criar conta...' : 'Criar conta',
-                    onPressed: _controller.isLoading ? () {} : _register,
+                    text: _controller.isLoading
+                        ? 'A criar conta...'
+                        : 'Criar conta',
+                    onPressed: _controller.isLoading ? null : _register,
                   ),
                   const SizedBox(height: 28),
                   Row(
@@ -184,10 +166,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     children: [
                       const Text(
                         'Já tens conta? ',
-                        style: TextStyle(
-                          color: AppTheme.grey,
-                          fontSize: 14,
-                        ),
+                        style: TextStyle(color: AppTheme.grey, fontSize: 14),
                       ),
                       TextButton(
                         onPressed: _goToLogin,

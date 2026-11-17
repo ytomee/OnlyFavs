@@ -29,10 +29,7 @@ class AppTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(
-            color: primaryRed,
-            width: 1.5,
-          ),
+          borderSide: const BorderSide(color: primaryRed, width: 1.5),
         ),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
